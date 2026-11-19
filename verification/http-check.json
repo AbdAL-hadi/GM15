@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-11-16T23:37:49.167Z",
+  "origin": "http://127.0.0.1:4173",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/shop",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/shop?q=shams",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/product/shams",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/product/vanilla-oil",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/journey/shams",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/layering",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/product/missing",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    },
+    {
+      "route": "/missing-route",
+      "status": 200,
+      "check": "Vite SPA shell served; browser interaction not tested"
+    }
+  ],
+  "assetsChecked": 30,
+  "localFonts": true,
+  "sceneLoadedLazily": true,
+  "scope": "HTTP and artifact checks only. No browser, WebGL, pointer, layout or console verification."
+}
