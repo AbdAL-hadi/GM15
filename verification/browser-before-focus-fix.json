@@ -1,0 +1,105 @@
+{
+  "base": "http://127.0.0.1:4180",
+  "results": [
+    {
+      "name": "390: home direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "390: product direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "390: journey direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "390: layering direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "390: search, filters, empty, reset, sorting",
+      "passed": true
+    },
+    {
+      "name": "390: variants/cart/quantities/favorites/reload/Escape/focus",
+      "passed": false,
+      "error": "expect(locator).toBeFocused() failed\n\nLocator:  locator('#global-search')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeFocused\" locator('#global-search') with timeout 5000ms\n  - waiting for locator('#global-search')\n    14 × locator resolved to <input value=\"\" id=\"global-search\" placeholder=\"شمس، فانيلا، زيت…\"/>\n       - unexpected value \"inactive\"\n"
+    },
+    {
+      "name": "390: layering and unavailable pair",
+      "passed": true
+    },
+    {
+      "name": "390: WebGL interaction stress/reset/notes/navigation/fallback/reduced motion",
+      "passed": true
+    },
+    {
+      "name": "768: home direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "768: product direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "768: journey direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "768: layering direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "768: search, filters, empty, reset, sorting",
+      "passed": true
+    },
+    {
+      "name": "768: variants/cart/quantities/favorites/reload/Escape/focus",
+      "passed": false,
+      "error": "expect(locator).toBeFocused() failed\n\nLocator:  locator('#global-search')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeFocused\" locator('#global-search') with timeout 5000ms\n  - waiting for locator('#global-search')\n    14 × locator resolved to <input value=\"\" id=\"global-search\" placeholder=\"شمس، فانيلا، زيت…\"/>\n       - unexpected value \"inactive\"\n"
+    },
+    {
+      "name": "768: layering and unavailable pair",
+      "passed": true
+    },
+    {
+      "name": "768: WebGL interaction stress/reset/notes/navigation/fallback/reduced motion",
+      "passed": true
+    },
+    {
+      "name": "1440: home direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "1440: product direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "1440: journey direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "1440: layering direct/reload/RTL/overflow/screenshot",
+      "passed": true
+    },
+    {
+      "name": "1440: search, filters, empty, reset, sorting",
+      "passed": true
+    },
+    {
+      "name": "1440: variants/cart/quantities/favorites/reload/Escape/focus",
+      "passed": false,
+      "error": "expect(locator).toBeFocused() failed\n\nLocator:  locator('#global-search')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeFocused\" locator('#global-search') with timeout 5000ms\n  - waiting for locator('#global-search')\n    14 × locator resolved to <input value=\"\" id=\"global-search\" placeholder=\"شمس، فانيلا، زيت…\"/>\n       - unexpected value \"inactive\"\n"
+    },
+    {
+      "name": "1440: layering and unavailable pair",
+      "passed": true
+    },
+    {
+      "name": "1440: WebGL interaction stress/reset/notes/navigation/fallback/reduced motion",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

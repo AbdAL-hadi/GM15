@@ -1,0 +1,55 @@
+{
+  "results": [
+    {
+      "name": "repeat spray during opening preserves the remaining opening delay",
+      "passed": true
+    },
+    {
+      "name": "cap mesh click and drag starting over cap",
+      "passed": true
+    },
+    {
+      "name": "nozzle drag while open does not trigger cap toggle",
+      "passed": true
+    },
+    {
+      "name": "emulated touch horizontal rotation and vertical page scroll",
+      "passed": true
+    },
+    {
+      "name": "reset cancels pending opening spray; repeat reset during spray and rotation",
+      "passed": true
+    },
+    {
+      "name": "GPU live resources before/after sprays",
+      "before": {
+        "buffers": 90,
+        "textures": 10,
+        "programs": 12
+      },
+      "after": {
+        "buffers": 90,
+        "textures": 10,
+        "programs": 12
+      },
+      "passed": true
+    },
+    {
+      "name": "30 sprays reuse GPU buffers, textures and programs",
+      "passed": true
+    },
+    {
+      "name": "context loss activates fallback",
+      "passed": true
+    },
+    {
+      "name": "catalog retry and retry to ready",
+      "passed": true
+    },
+    {
+      "name": "catalog empty and retry to ready",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,37 @@
+{
+  "results": [
+    {
+      "name": "1440 direct result without answers",
+      "passed": true
+    },
+    {
+      "name": "1440 complete journey, persistence, product and layering",
+      "passed": true
+    },
+    {
+      "name": "1440 no results and restart only discovery storage",
+      "passed": true
+    },
+    {
+      "name": "1440 invalid storage and no overflow",
+      "passed": true
+    },
+    {
+      "name": "390 direct result without answers",
+      "passed": true
+    },
+    {
+      "name": "390 complete journey, persistence, product and layering",
+      "passed": true
+    },
+    {
+      "name": "390 no results and restart only discovery storage",
+      "passed": true
+    },
+    {
+      "name": "390 invalid storage and no overflow",
+      "passed": true
+    }
+  ],
+  "errors": []
+}
