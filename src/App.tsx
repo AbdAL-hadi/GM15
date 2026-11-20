@@ -4,9 +4,13 @@ import { StoreProvider } from './state/Store'
 import { Shell } from './components/Shell'
 import { NotFound } from './components/UI'
 import Home from './pages/Home'
+import { CatalogProvider } from './state/Catalog'
+import { DiscoveryProvider } from './discovery/state'
+import Discover from './pages/Discover'
+import DiscoverResults from './pages/DiscoverResults'
 const Shop=lazy(()=>import('./pages/Shop'))
 const Product=lazy(()=>import('./pages/Product'))
 const Journey=lazy(()=>import('./pages/Journey'))
 const Layering=lazy(()=>import('./pages/Layering'))
 const About=lazy(()=>import('./pages/About'))
-export default function App(){return <BrowserRouter><StoreProvider><Suspense fallback={<div className="page-loading">لحظة من فضلك…</div>}><Routes><Route element={<Shell/>}><Route index element={<Home/>}/><Route path="shop" element={<Shop/>}/><Route path="product/:slug" element={<Product/>}/><Route path="journey/:slug" element={<Journey/>}/><Route path="layering" element={<Layering/>}/><Route path="about" element={<About/>}/><Route path="*" element={<NotFound/>}/></Route></Routes></Suspense></StoreProvider></BrowserRouter>}
+export default function App(){return <BrowserRouter><CatalogProvider><StoreProvider><DiscoveryProvider><Suspense fallback={<div className="page-loading">لحظة من فضلك…</div>}><Routes><Route element={<Shell/>}><Route index element={<Home/>}/><Route path="shop" element={<Shop/>}/><Route path="product/:slug" element={<Product/>}/><Route path="journey/:slug" element={<Journey/>}/><Route path="layering" element={<Layering/>}/><Route path="discover" element={<Discover/>}/><Route path="discover/results" element={<DiscoverResults/>}/><Route path="about" element={<About/>}/><Route path="*" element={<NotFound/>}/></Route></Routes></Suspense></DiscoveryProvider></StoreProvider></CatalogProvider></BrowserRouter>}

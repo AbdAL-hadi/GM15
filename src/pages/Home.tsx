@@ -1,16 +1,27 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowUpLeft, MoveUpRight } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, ArrowUpLeft } from 'lucide-react'
 import { BottleArt } from '../components/BottleArt'
-import { Botanical } from '../components/Botanical'
-import { NoteArt } from '../components/NoteArt'
 import { ProductCard, SectionTitle } from '../components/UI'
-import { products } from '../data/products'
+import { useCatalog } from '../state/Catalog'
 export default function Home() {
-  return <main><section className="hero"><div className="hero-copy"><span className="eyebrow"><i/> عطرٌ يحمل شيئًا منك</span><h1>لكل ذكرى<br/><em>رائحة.</em></h1><span className="gold-line"/><p>بعض اللحظات لا تُنسى… تُستعاد برائحة.<br/>اكتشف عطورًا تحكي قصتك، وتبقى في ذاكرتك.</p><Link className="button" to="/product/shams">اكتشف عطرك <ArrowLeft size={19}/></Link><div className="hero-caption"><span>THETIA</span><span>عطور، بلمسة ذاتيّة.</span></div></div><div className="hero-visual"><div className="sunlight"/><Botanical/><div className="hero-orbit orbit-one"/><div className="hero-orbit orbit-two"/><div className="hero-bottle"><BottleArt name="SHAMS" reflection/></div><span className="hero-visual-note" dir="ltr">A MEMORY, BOTTLED.</span><span className="hero-number" dir="ltr">01 / 04</span><div className="hero-visual-label"><span>شمس</span><small>دفءٌ من أول رَشّة</small></div></div><div className="hero-bottom"><span>صُنعت لترافق حكايتك</span><Link to="/shop">استكشف المجموعة <MoveUpRight size={14}/></Link></div></section>
-    <div className="brand-strip"><span>روائح تشبهك</span><i/><span>ذكريات تستحق أن تبقى</span><i/><span>علامة فلسطينية</span><i/><span>تفاصيل تُشعَر</span></div>
-    <section className="section collection"><SectionTitle eyebrow="THE SCENT COLLECTION" title="أيّ رائحة تحكي عنك؟"><Link className="text-link" to="/shop">جميع العطور <ArrowLeft size={18}/></Link></SectionTitle><div className="product-grid">{products.filter(p=>p.type==='perfume').map(p=><ProductCard key={p.id} product={p}/>)}</div><p className="data-caption">مجموعة مختارة للتجربة · الأسعار والمخزون تجريبيان</p></section>
-    <section className="discovery-section"><div className="discovery-art"><div className="scent-circle"/><BottleArt name="SHAMS"/><div className="floating-note note-one"><NoteArt note="vanilla"/><span>فانيلا</span></div><div className="floating-note note-two"><NoteArt note="honey"/><span>عسل</span></div><div className="floating-note note-three"><NoteArt note="patchouli"/><span>باتشولي</span></div></div><div className="editorial-copy"><span className="eyebrow">BEYOND THE FIRST SPRAY</span><h2>لا تكتفِ بالرائحة،<br/>اكتشف حكايتها.</h2><span className="gold-line"/><p>أدر الزجاجة، افتح الغطاء، واكتشف النوتات التي تصنع شخصية عطرك. تجربة تفاعلية تأخذك أبعد من الانطباع الأول.</p><Link to="/product/shams" className="text-link">ادخل تجربة شمس <ArrowUpLeft size={20}/></Link><small>مجسّم بصري تجريبي، ورذاذ تمثيلي.</small></div></section>
-    <section className="section layering-teaser"><div className="editorial-copy"><span className="eyebrow">THE ART OF LAYERING</span><h2>رائحتان.<br/>وحكاية تخصّك.</h2><p>لمسة من الزيت، ورشّة من عطرك المفضّل.<br/>اكتشف فن التنسيق، وامنح رائحتك بُعدًا آخر.</p><Link to="/layering" className="button">اصنع تنسيقك <ArrowLeft size={18}/></Link></div><div className="layering-teaser-art"><div className="ribbon"/><BottleArt name="SHAMS"/><span className="layering-plus">+</span><BottleArt name="VANILLA OIL" oil/><span className="pair-caption" dir="ltr">SHAMS + VANILLA OIL</span></div></section>
+  const { products } = useCatalog()
+  const perfumes=products.filter(p=>p.type==='perfume')
+  const [index,setIndex]=useState(0)
+  const featured=perfumes[index]??perfumes[0]
+  return <main className="home-page">
+    <section className="home-hero" aria-label="عطور تروي حكايتك">
+      <div className="home-hero-visual">
+        <Link className="home-hero-image" to={`/product/${featured.slug}`} aria-label={`اكتشف عطر ${featured.arabicName}`}><BottleArt name={featured.name} color={featured.color}/></Link>
+        <div className="home-hero-product"><Link to={`/product/${featured.slug}`}><bdi>{featured.name} / {featured.arabicName}</bdi></Link><div className="home-hero-controls"><button aria-label="العطر السابق" onClick={()=>setIndex(i=>(i-1+perfumes.length)%perfumes.length)}><ChevronLeft size={19}/></button><span dir="ltr">{String(index+1).padStart(2,'0')} / {String(perfumes.length).padStart(2,'0')}</span><button aria-label="العطر التالي" onClick={()=>setIndex(i=>(i+1)%perfumes.length)}><ChevronRight size={19}/></button></div></div>
+      </div>
+      <div className="home-hero-copy" dir="rtl"><span>عطور تروي حكايتك</span><h1>لكل ذكرى<br/>رائحة</h1><p>اكتشف عطرك، وخلّي رائحتك تحكي عنك.</p><div className="home-hero-actions"><Link className="button" to="/shop">اكتشف المجموعة</Link><Link className="home-hero-secondary" to="/discover">اكتشف ذوقك <ArrowLeft size={20}/></Link></div></div>
+    </section>
+    <nav className="home-entrances" aria-label="ابدأ رحلتك"><Link to="/shop"><img src="/discover/floral-photo.jpg" alt=""/><span>اكتشف الروائح <ArrowLeft size={18}/></span></Link><Link to="/discover"><img src="/discover/vanilla-photo.jpg" alt=""/><span>اعثر على عطرك <ArrowLeft size={18}/></span></Link><Link to={`/journey/${featured.slug}`}><img src="/discover/woods-photo.jpg" alt=""/><span>رحلة النوتات <ArrowLeft size={18}/></span></Link></nav>
+    <section className="section collection"><SectionTitle eyebrow="THE SCENT COLLECTION" title="أيّ رائحة تحكي عنك؟"><Link className="text-link" to="/shop">جميع العطور <ArrowLeft size={18}/></Link></SectionTitle><div className="product-grid">{perfumes.map(p=><ProductCard key={p.id} product={p}/>)}</div><p className="data-caption">مجموعة مختارة للتجربة · الأسعار والمخزون تجريبيان</p></section>
+    <section className="discovery-section"><div className="discovery-art"><BottleArt name={featured.name}/></div><div className="editorial-copy"><span className="eyebrow">BEYOND THE FIRST SPRAY</span><h2>لا تكتفِ بالرائحة،<br/>اكتشف حكايتها.</h2><p>أدر الزجاجة، افتح الغطاء، واكتشف النوتات التي تصنع شخصية عطرك.</p><Link to={`/product/${featured.slug}`} className="text-link">ادخل تجربة {featured.arabicName} <ArrowUpLeft size={20}/></Link><small>مجسّم بصري تجريبي، ورذاذ تمثيلي.</small></div></section>
+    <section className="section home-layering-note"><h2>تنسيقات المجموعة الجديدة ستضاف لاحقًا</h2></section>
     <section className="home-story"><span className="eyebrow">SUBJECTIVELY, YOURS</span><h2>العطر شخصيّ.<br/>لذلك، سمّيناه <em>ذاتيّة.</em></h2><p>نؤمن أن الرائحة قادرة على إعادتك إلى لحظة، أو مكان، أو شخص.<br/>عطور تصبح جزءًا من قصتك، وتحمل شيئًا منك أينما ذهبت.</p><Link to="/about" className="text-link">تعرّف إلى ذاتية <ArrowUpLeft size={18}/></Link></section>
   </main>
 }
+

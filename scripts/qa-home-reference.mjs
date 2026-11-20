@@ -1,0 +1,26 @@
+import { chromium,expect } from '@playwright/test'
+const browser=await chromium.launch({channel:'msedge',headless:true})
+for(const [width,height] of [[1440,900],[1366,768],[390,844]]){
+ const page=await browser.newPage({viewport:{width,height}})
+ const errors=[];page.on('pageerror',e=>errors.push(e.message))
+ await page.goto('http://127.0.0.1:4181/')
+ await expect(page.getByRole('heading',{name:/لكل ذكرى/})).toBeVisible()
+ await expect(page.locator('.home-hero-image img')).toHaveAttribute('src','/products/ward.jpg')
+ await expect(page.locator('.home-hero-product')).toContainText('01 / 10')
+ await page.screenshot({path:`verification/screenshots/home-reference-${width}.png`,fullPage:false})
+ await page.getByRole('button',{name:'العطر التالي'}).click()
+ await expect(page.locator('.home-hero-image img')).toHaveAttribute('src','/products/sukoon.jpg')
+ await expect(page.locator('.home-hero-product')).toContainText('02 / 10')
+ await expect(page.locator('.home-hero-product a')).toHaveAttribute('href','/product/sukoon')
+ await expect(page.getByRole('link',{name:/رحلة النوتات/})).toHaveAttribute('href','/journey/sukoon')
+ await page.getByRole('button',{name:'العطر السابق'}).click()
+ await page.getByRole('link',{name:'اكتشف المجموعة',exact:true}).click();await expect(page).toHaveURL(/\/shop$/)
+ await page.goBack();await page.getByRole('link',{name:/اكتشف ذوقك/}).first().click();await expect(page).toHaveURL(/\/discover/)
+ await page.goBack();await page.getByRole('link',{name:/رحلة النوتات/}).click();await expect(page).toHaveURL(/\/journey\/ward$/)
+ expect(await page.evaluate(()=>globalThis.document.documentElement.scrollWidth<=globalThis.innerWidth)).toBe(true)
+ expect(errors).toEqual([])
+ console.log(`PASS ${width}x${height}`)
+ await page.close()
+}
+await browser.close()
+

@@ -1,7 +1,11 @@
-import { useId } from 'react'
-export function BottleArt({ name = 'SHAMS', color = '#e8c77b', oil = false, className = '', reflection = false }: { name?: string; color?: string; oil?: boolean; className?: string; reflection?: boolean }) {
+import { products } from '../data/products'
+import { useId, useState } from 'react'
+export function BottleArt({ name = 'THETIA', color = '#e8c77b', oil = false, className = '', reflection = false, photo = true }: { name?: string; color?: string; oil?: boolean; className?: string; reflection?: boolean; photo?: boolean }) {
   const id = useId().replace(/:/g, '')
-  return <svg className={`bottle-art ${className}`} viewBox="0 0 400 530" role="img" aria-label={`عبوة ${name} — نموذج بصري تجريبي`}>
+  const [failed,setFailed]=useState(false)
+  const product = products.find(p=>p.name===name)
+  if(photo && !failed && product?.image)return <img className={`bottle-art product-photo ${className}`} src={product.image} alt={`${product.arabicName} — ${product.name}`} onError={()=>setFailed(true)}/>
+  return <svg className={`bottle-art ${className}`} viewBox="0 0 400 530" role="img" aria-label={`عبوة ${name} — نموذج بصري تقريبي`}>
     <defs>
       <linearGradient id={`${id}-metal`}><stop stopColor="#56534b"/><stop offset=".1" stopColor="#e9e6dc"/><stop offset=".22" stopColor="#7a766b"/><stop offset=".31" stopColor="#fffdf5"/><stop offset=".43" stopColor="#a6a195"/><stop offset=".64" stopColor="#efede5"/><stop offset=".77" stopColor="#6e6a5e"/><stop offset=".9" stopColor="#eeece4"/><stop offset="1" stopColor="#8b877d"/></linearGradient>
       <linearGradient id={`${id}-glass`}><stop stopColor="#a7a08c" stopOpacity=".6"/><stop offset=".04" stopColor="#fff" stopOpacity=".95"/><stop offset=".1" stopColor="#c5b994" stopOpacity=".45"/><stop offset=".18" stopColor="#fff" stopOpacity=".65"/><stop offset=".48" stopColor="#fcf9ef" stopOpacity=".2"/><stop offset=".82" stopColor="#fff" stopOpacity=".7"/><stop offset=".94" stopColor="#aa9b79" stopOpacity=".55"/><stop offset="1" stopColor="#fff"/></linearGradient>

@@ -18,9 +18,24 @@ export function Dialog({ open, onClose, title, children, className = '' }: { ope
   useEffect(() => {
     const dialog = ref.current
     if (!dialog || !open) return
+    const trapTab = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return
+      const controls = [...dialog.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')].filter(el => el.getClientRects().length > 0)
+      const first = controls[0], last = controls.at(-1)
+      if (!first || !last) { event.preventDefault(); dialog.focus(); return }
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
+    dialog.addEventListener('keydown', trapTab)
+    return () => dialog.removeEventListener('keydown', trapTab)
+  }, [open])
+  useEffect(() => {
+    const dialog = ref.current
+    if (!dialog || !open) return
     const previous = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
     dialog.showModal(); document.body.style.overflow = 'hidden'
+    dialog.querySelector<HTMLElement>('[data-dialog-autofocus]')?.focus()
     return () => { dialog.close(); document.body.style.overflow = previousOverflow; previous?.focus() }
   }, [open])
   return <dialog ref={ref} className={`dialog ${className}`} aria-label={title} onCancel={onClose} onClick={e => { if (e.target === e.currentTarget) { const r = e.currentTarget.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) onClose() } }}><div className="dialog-heading"><h2>{title}</h2><button className="icon-button" onClick={onClose} aria-label="إغلاق"><X size={22}/></button></div>{children}</dialog>

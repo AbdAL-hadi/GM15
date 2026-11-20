@@ -8,7 +8,7 @@
 
 ```powershell
 cd C:\AIhack\GM15
-npm install
+npm ci
 npm run dev
 ```
 
@@ -77,8 +77,10 @@ verification/     نتائج الفحوص المنفّذة
 
 عند النشر على مضيف ثابت، وجّه مسارات التطبيق إلى `index.html`. يتضمن `public/_redirects` قاعدة للمضيفين الذين يدعمون صيغة Netlify؛ Vite dev/preview يدعمان فتح الروابط المباشرة محليًا.
 
-## حدود التحقق
+## المراجعة الحالية
 
-نجحت فحوص الأنواع وLint والاختبارات والبناء. اختبارات التصيير تستخدم React server rendering في Node، وليست اختبارات متصفح. فحص HTTP لا ينفّذ JavaScript.
+أضيفت تجربة [اكتشف ذوقك](/discover) بخمس خطوات ونتائج من الكتالوج المحلي. شرحها وفحوصها وحدود الصور في [DISCOVERY_FEATURE_REPORT.md](DISCOVERY_FEATURE_REPORT.md).
 
-تعذر اختبار المتصفح: المضيف المباشر غير متاح، ثم أوقف حارس أداة Windows التحكم في Edge لأنه لم يستطع تحديد URL بثقة. لم يتم اختبار المظهر أو اللمس أو WebGL أو Console فعليًا، ولم تُلتقط Screenshots. انظر [MANUAL_QA.md](MANUAL_QA.md) و[REQUIREMENTS_CHECKLIST.md](REQUIREMENTS_CHECKLIST.md).
+أُنجزت مراجعة 19 نوفمبر 2026: فحوص Typecheck وLint و17 اختبارًا وProduction build، وفحوص متصفح فعلية على Edge headless عند390 و768 و1440. تفاصيل النتائج وحدود المحاكاة والصور وربط API لاحقًا في [REVIEW_REPORT.md](REVIEW_REPORT.md). [قائمة المتطلبات](REQUIREMENTS_CHECKLIST.md) تفرق بين المثبت والجزئي.
+
+مصدر الكتالوج في src/data/catalog.ts، ويغذّي CatalogProvider الصفحات والسلة والمفضلة. بقيت البيانات الأصلية، ولا توجد خدمات Backend أو دفع. شغّل npm ci لإعادة تثبيت اعتماديات النظام من lock، ثم اتبع MANUAL_QA.md لإعادة فحوص المتصفح.

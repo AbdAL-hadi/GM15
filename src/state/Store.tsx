@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useReducer, useState } from 'react'
 import type { ReactNode } from 'react'
-import { products } from '../data/products'
+import { useCatalog } from './Catalog'
 import { cartReducer, readStored, sanitizeCart } from './cart'
 import type { CartAction, CartLine } from './cart'
 interface StoreValue { cart: CartLine[]; dispatch: React.Dispatch<CartAction>; favorites: string[]; toggleFavorite: (id: string) => void; cartOpen: boolean; setCartOpen: (open: boolean) => void; toast: string; notify: (message: string) => void }
 const Store = createContext<StoreValue | null>(null)
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [cart, dispatch] = useReducer(cartReducer, undefined, () => sanitizeCart(readStored('thetia-cart-v1', [])))
+  const { products } = useCatalog()
+  const [cart, dispatch] = useReducer((state: CartLine[], action: CartAction) => cartReducer(state, action, products), undefined, () => sanitizeCart(readStored('thetia-cart-v1', []), products))
   const [favorites, setFavorites] = useState<string[]>(() => { const saved = readStored<unknown>('thetia-favorites-v1', []); return Array.isArray(saved) ? [...new Set(saved.filter((id): id is string => typeof id === 'string' && products.some(p => p.id === id)))] : [] })
   const [cartOpen, setCartOpen] = useState(false)
   const [toast, setToast] = useState('')

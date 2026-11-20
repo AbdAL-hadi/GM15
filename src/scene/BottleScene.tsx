@@ -15,10 +15,10 @@ function makeLabel(name: string) {
   canvas.width = 768; canvas.height = 768
   const ctx = canvas.getContext('2d')!
   ctx.clearRect(0, 0, 768, 768)
-  ctx.fillStyle = 'rgba(249,241,213,.3)'; ctx.fillRect(0, 0, 768, 768)
+  ctx.fillStyle = 'rgba(249,241,213,.9)'; ctx.fillRect(0, 0, 768, 768)
   ctx.fillStyle = '#292c20'; ctx.textAlign = 'center'
-  ctx.font = '60px Georgia'; ctx.letterSpacing = '15px'; ctx.fillText('THETIA', 390, 280)
-  ctx.font = '24px Arial'; ctx.letterSpacing = '7px'; ctx.fillText(name, 387, 375)
+  ctx.font = 'bold 64px Georgia'; ctx.letterSpacing = '15px'; ctx.fillText('THETIA', 390, 280)
+  ctx.font = 'bold 28px Arial'; ctx.letterSpacing = '7px'; ctx.fillText(name, 387, 375)
   ctx.font = '18px Arial'; ctx.letterSpacing = '3px'; ctx.fillText('EAU DE PARFUM', 385, 635)
   const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace
   return texture
@@ -44,16 +44,20 @@ function Spray({ sprayId, reduced }: { sprayId: number; reduced: boolean }) {
   return <points ref={points} frustumCulled={false} visible={false}><bufferGeometry><bufferAttribute attach="attributes-position" args={[positions, 3]}/></bufferGeometry><pointsMaterial ref={material} color="#faf1d8" size={.055} transparent opacity={0} depthWrite={false}/></points>
 }
 /** Procedural bottle adapter: replace only this group with a locally owned GLB later. */
-function BottleModel({ capOpen, sprayId, angle, name, color, onCapToggle, onSpray, explore, stage = 0, reduced }: SceneProps & { reduced: boolean }) {
+function BottleModel({ capOpen, sprayId, angle, name, color, onCapToggle, onSpray, explore, stage = 0, reduced, resetKey, canActivate }: SceneProps & { reduced: boolean; canActivate: () => boolean }) {
   const cap = useRef<THREE.Group>(null)
   const nozzle = useRef<THREE.Group>(null)
   const root = useRef<THREE.Group>(null)
   const lastSprayAt = useRef(-10)
+  const lastReset = useRef(resetKey)
   const texture = useMemo(() => makeLabel(name), [name])
   useEffect(() => () => texture.dispose(), [texture])
   useEffect(() => { lastSprayAt.current = performance.now() }, [sprayId])
   useFrame((_, delta) => {
-    const speed = reduced ? 1 : 1 - Math.exp(-delta * 9)
+    const resetting = lastReset.current !== resetKey
+    lastReset.current = resetKey
+    if (resetting) lastSprayAt.current = -10
+    const speed = reduced || resetting ? 1 : 1 - Math.exp(-delta * 9)
     if (cap.current) { cap.current.position.y = THREE.MathUtils.lerp(cap.current.position.y, capOpen ? 3.1 : 2.0, speed); cap.current.rotation.z = THREE.MathUtils.lerp(cap.current.rotation.z, capOpen ? -.18 : 0, speed) }
     if (root.current) { root.current.rotation.y = THREE.MathUtils.lerp(root.current.rotation.y, angle, speed); root.current.rotation.z = THREE.MathUtils.lerp(root.current.rotation.z, explore ? -.09 : 0, speed) }
     if (nozzle.current) { const elapsed = (performance.now() - lastSprayAt.current) / 1000; nozzle.current.position.y = 1.58 - (elapsed < .24 && sprayId > 0 ? Math.sin(elapsed / .24 * Math.PI) * .09 : 0) }
@@ -66,15 +70,15 @@ function BottleModel({ capOpen, sprayId, angle, name, color, onCapToggle, onSpra
       <meshPhysicalMaterial color={color} roughness={.12} transmission={.64} thickness={1.2} ior={1.33} transparent opacity={.82} envMapIntensity={1.15}/>
     </RoundedBox>
     <mesh position={[0, 1.065, 0]} rotation={[Math.PI / 2, 0, 0]}><planeGeometry args={[1.82, .71]}/><meshStandardMaterial color={color} transparent opacity={.23} side={THREE.DoubleSide}/></mesh>
-    <mesh position={[0, -.1, .583]}><planeGeometry args={[1.65, 1.88]}/><meshBasicMaterial map={texture} transparent depthWrite={false}/></mesh>
+    <mesh renderOrder={5} position={[0, -.1, .583]}><planeGeometry args={[1.65, 1.88]}/><meshBasicMaterial map={texture} transparent depthWrite={false}/></mesh>
     <mesh position={[0, .01, 0]}><cylinderGeometry args={[.017, .017, 2.5, 8]}/><meshStandardMaterial color="#e7dfc8" transparent opacity={.45}/></mesh>
     <mesh position={[0, 1.44, 0]}><cylinderGeometry args={[.34, .37, .28, 40]}/><meshStandardMaterial color="#cac5b3" metalness={1} roughness={.18}/></mesh>
-    <group ref={nozzle} position={[0, 1.58, 0]} onClick={e => { e.stopPropagation(); onSpray() }}>
+    <group ref={nozzle} position={[0, 1.58, 0]} onClick={e => { e.stopPropagation(); if (canActivate()) onSpray() }}>
       <mesh><cylinderGeometry args={[.20, .20, .32, 32]}/><meshStandardMaterial color="#d6d1c5" metalness={1} roughness={.16}/></mesh>
       <mesh position={[0, .02, .203]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[.034, .034, .015, 12]}/><meshStandardMaterial color="#393c32"/></mesh>
     </group>
-    <group ref={cap} position={[0, 2, 0]} onClick={e => { e.stopPropagation(); onCapToggle() }}>
-      <mesh><cylinderGeometry args={[.47, .47, 1.12, 64]}/><meshStandardMaterial color="#c5c1b6" metalness={1} roughness={.21}/></mesh>
+    <group ref={cap} position={[0, 2, 0]} onClick={e => { e.stopPropagation(); if (canActivate()) onCapToggle() }}>
+      <mesh><cylinderGeometry args={[.47, .47, 1.12, 64]}/><meshStandardMaterial color="#c5c1b6" metalness={.78} roughness={.28}/></mesh>
       <mesh position={[0, .565, 0]}><cylinderGeometry args={[.44, .44, .016, 48]}/><meshStandardMaterial color="#d6d1c4" metalness={1} roughness={.23}/></mesh>
       <mesh position={[0, -.56, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[.45, .018, 8, 48]}/><meshStandardMaterial color="#928a76" metalness={1} roughness={.2}/></mesh>
     </group>
@@ -97,16 +101,18 @@ export default function BottleScene(props: SceneProps) {
   const [lost, setLost] = useState(false)
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement | null>(null)
-  const drag = useRef<{ start: number; angle: number } | null>(null)
+  const drag = useRef<{ start: number; y: number; angle: number; id: number; moved: boolean; vertical: boolean } | null>(null)
+  const container = useRef<HTMLDivElement>(null)
+  useEffect(() => { const el=container.current; const id=drag.current?.id; drag.current=null; if (id !== undefined && el?.hasPointerCapture(id)) el.releasePointerCapture(id) }, [props.resetKey])
   useEffect(() => { const mq = matchMedia('(prefers-reduced-motion: reduce)'); const change = () => setReduced(mq.matches); mq.addEventListener('change', change); return () => mq.removeEventListener('change', change) }, [])
   useEffect(() => { if (!canvasElement) return; const handleLost = () => setLost(true); canvasElement.addEventListener('webglcontextlost', handleLost); return () => canvasElement.removeEventListener('webglcontextlost', handleLost) }, [canvasElement])
   const fallback = <div className="scene-fallback"><BottleArt name={props.name} color={props.color}/><p>العرض ثلاثي الأبعاد غير متاح على هذا الجهاز.<br/>يمكنك متابعة اكتشاف النوتات والتسوّق.</p></div>
   if (!supported || lost) return fallback
-  return <SceneBoundary fallback={fallback}><div className="scene-canvas" tabIndex={0} role="group" aria-label="مجسّم العطر. اسحب أفقيًا أو استخدم سهمي اليمين واليسار للتدوير، ومفتاح Home لإعادة الزاوية." onKeyDown={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); props.onAngleChange(props.angle + (e.key === 'ArrowLeft' ? -.25 : .25)) } if (e.key === 'Home') props.onAngleChange(0) }} onPointerDown={e => { drag.current = { start: e.clientX, angle: props.angle } }} onPointerMove={e => { if (drag.current && Math.abs(e.clientX - drag.current.start) > 6) { if (!e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.setPointerCapture(e.pointerId); props.onAngleChange(drag.current.angle + (e.clientX - drag.current.start) * .012) } }} onPointerUp={() => { drag.current = null }} onPointerCancel={() => { drag.current = null }} onLostPointerCapture={() => { drag.current = null }}>
+  return <SceneBoundary fallback={fallback}><div className="scene-canvas" tabIndex={0} role="group" aria-label="مجسّم العطر. اسحب أفقيًا أو استخدم سهمي اليمين واليسار للتدوير، ومفتاح Home لإعادة الزاوية." onKeyDown={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); props.onAngleChange(props.angle + (e.key === 'ArrowLeft' ? -.25 : .25)) } if (e.key === 'Home') props.onAngleChange(0) }} ref={container} onPointerDownCapture={e => { if (!e.isPrimary || e.button !== 0) return; drag.current = { start: e.clientX, y: e.clientY, angle: props.angle, id: e.pointerId, moved: false, vertical: false } }} onPointerMoveCapture={e => { const d=drag.current; if (!d || d.id !== e.pointerId || !e.buttons) return; const dx=e.clientX-d.start, dy=e.clientY-d.y; if (Math.hypot(dx,dy)>6) d.moved=true; if (!e.currentTarget.hasPointerCapture(e.pointerId) && Math.abs(dy)>6 && Math.abs(dy)>Math.abs(dx)) d.vertical=true; if (!d.vertical && Math.abs(dx)>6) { if (!e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.setPointerCapture(e.pointerId); props.onAngleChange(d.angle+dx*.012) } }} onPointerUp={e => { if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId) }} onPointerCancel={() => { if (drag.current) drag.current.moved=true }}>
     {!ready && <div className="scene-loading"><span/> جارٍ تجهيز تجربتك…</div>}
     <Canvas dpr={[1, 1.5]} camera={{ position: [3.6, 2.1, 8], fov: 39 }} gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }} onCreated={({ gl, camera }) => { camera.lookAt(0, .25, 0); setCanvasElement(gl.domElement); setReady(true) }}>
       <ambientLight intensity={1.4}/><directionalLight position={[4, 8, 5]} intensity={3} color="#fff6dc"/>
-      <Suspense fallback={null}><Environment resolution={64}><Lightformer position={[0, 5, -3]} intensity={4} scale={[6, 8, 1]}/><Lightformer position={[-4, 0, 2]} rotation={[0, Math.PI / 2, 0]} intensity={5} scale={[2, 7, 1]}/><Lightformer position={[4, 1, 3]} rotation={[0, -Math.PI / 3, 0]} intensity={4} scale={[1, 8, 1]}/><Lightformer position={[0, 2, 5]} intensity={2} scale={[4, 1, 1]}/></Environment><BottleModel {...props} reduced={reduced}/></Suspense>
+      <Suspense fallback={null}><Environment resolution={64}><Lightformer position={[0, 5, -3]} intensity={4} scale={[6, 8, 1]}/><Lightformer position={[-4, 0, 2]} rotation={[0, Math.PI / 2, 0]} intensity={5} scale={[2, 7, 1]}/><Lightformer position={[4, 1, 3]} rotation={[0, -Math.PI / 3, 0]} intensity={4} scale={[1, 8, 1]}/><Lightformer position={[0, 2, 5]} intensity={2} scale={[4, 1, 1]}/></Environment><BottleModel {...props} reduced={reduced} canActivate={() => !!drag.current && !drag.current.moved}/></Suspense>
     </Canvas>
   </div></SceneBoundary>
 }
