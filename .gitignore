@@ -4,3 +4,7 @@ dist/
 .vite/
 *.log
 .npm-cache/
+
+# reference videos (local only)
+videos/
+.DS_Store

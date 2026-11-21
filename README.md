@@ -1,5 +1,7 @@
 # THETIA — ذاتية
 
+> **Redesign (branch `redesign/collection-scroll`):** the new site lives in `src/thetia/`. See [HANDOFF.md](HANDOFF.md) for how to run it and what the backend needs to replace.
+
 تجربة Frontend عربية مستقلة للعطور، مستوحاة من المرجع المرفق. المشروع محلي، ولا يرسل طلبات شراء أو مدفوعات أو بيانات شخصية.
 
 ## التشغيل
